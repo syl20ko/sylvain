@@ -1,16 +1,10 @@
-import React, { Suspense,useMemo, useRef } from "react";
-import { Canvas, extend,useUpdate, useFrame } from "react-three-fiber";
-import { OrbitControls, Stars, Effects } from "@react-three/drei";
+import React, { Suspense, useMemo, useRef } from "react";
+import { Canvas, useUpdate, useFrame } from "react-three-fiber";
+import { OrbitControls, Stars } from "@react-three/drei";
 import Police from "./Police";
 import Mars from "./Mars";
-import Earth from "./Earth";
-import Tv from "./tv";
-import { BloomPass } from "three/examples/jsm/postprocessing/BloomPass";
-import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass";
 import * as THREE from "three";
 import JSONfont from "./Akaya Telivigala_Regular.json";
-
-extend({ BloomPass, GlitchPass });
 
 function Loading({
   children,
@@ -27,12 +21,6 @@ function Loading({
       font,
       size: 16,
       height: 30,
-      /* curveSegments: 32, */
-/*       bevelEnabled: true,
-      bevelThickness: 6,
-      bevelSize: 1.5,
-      bevelOffset: 0,
-      bevelSegments: 1, */
     }),
     [font]
   );
@@ -49,16 +37,16 @@ function Loading({
     [children]
   );
 
-  const ref = useRef()
+  const ref = useRef();
 
-    // Animate model
-    useFrame((state) => {
-        const t = state.clock.getElapsedTime()
-        ref.current.rotation.z = -0.2 - (1 + Math.sin(t / 1.5)) / 20
-        ref.current.rotation.x = Math.cos(t / 2) / 8
-        ref.current.rotation.y = Math.sin(t / 2) / 8
-        ref.current.position.y = (1 + Math.sin(t / 1.5)) / 10
-      })
+  // Animate model
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    ref.current.rotation.z = -0.2 - (1 + Math.sin(t / 1.5)) / 20;
+    ref.current.rotation.x = Math.cos(t / 2) / 8;
+    ref.current.rotation.y = Math.sin(t / 2) / 8;
+    ref.current.position.y = (1 + Math.sin(t / 1.5)) / 10;
+  });
 
   return (
     <group ref={ref} {...props} scale={[0.1 * size, 0.1 * size, 0.01]}>
@@ -71,17 +59,23 @@ function Loading({
 }
 
 function App() {
+
+
   return (
     <Canvas camera={{ position: [0, 20, 29], fov: 100 }}>
       <directionalLight intensity={0.2} />
       <ambientLight intensity={0.5} />
-      {/*        <Effects>
-        <glitchPass attachArray="passes"  renderToScreen />
-      </Effects>  */}
-      <Suspense fallback={<Loading hAlign="center" position={[0, 0, 0]} children="Chargement..." size={3} />}>
-        {/* <Earth /> */}
+      <Suspense
+        fallback={
+          <Loading
+            hAlign="center"
+            position={[0, 0, 0]}
+            children="Chargement..."
+            size={3}
+          />
+        }
+      >
         <Mars />
-        <Tv position={[0, 22, -9]} />
         <group>
           <Police />
           <Stars
@@ -92,12 +86,11 @@ function App() {
           />
         </group>
       </Suspense>
-      {/*  <Floor /> */}
       <OrbitControls
         maxPolarAngle={Math.PI / 2}
         minDistance={[35]}
         minPolarAngle={0}
-        /* autoRotate */
+        autoRotate
       />
     </Canvas>
   );
